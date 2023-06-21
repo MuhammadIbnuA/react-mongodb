@@ -3,6 +3,7 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
+import Spinner from 'react-bootstrap/Spinner';
 import { useHistory } from "react-router-dom";
 
 
@@ -145,9 +146,6 @@ const PasienTable = () => {
       <Button variant="primary" onClick={() => setShowModal(true)}>
         Add Pasien
       </Button>
-      <Button variant="danger" onClick={handleLogout}>
-        Logout
-      </Button>
       <h2 style={{ color: 'white' }}>.</h2>
       {pasiens.length > 0 ? (
         <Table striped bordered hover>
@@ -178,7 +176,9 @@ const PasienTable = () => {
           </tbody>
         </Table>
       ) : (
-        <p>Loading data...</p>
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
       )}
 
       <Modal show={showModal} onHide={handleCloseModal}>

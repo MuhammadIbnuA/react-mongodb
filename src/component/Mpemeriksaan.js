@@ -3,6 +3,7 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
+import { Spinner } from 'react-bootstrap';
 
 const MyComponent = () => {
   const [data, setData] = useState([]);
@@ -196,7 +197,9 @@ const MyComponent = () => {
           </tbody>
         </Table>
       ) : (
-        <p>Loading data...</p>
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
       )}
 
       <Modal show={showModal} onHide={handleCloseModal}>

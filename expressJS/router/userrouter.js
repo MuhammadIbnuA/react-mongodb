@@ -9,4 +9,7 @@ router.post('/login', userController.login);
 // Get all users
 router.get('/users', userController.getUsers);
 
+// Get logged in users
+router.get('/loggedinusers', userController.getLoggedInUsers);
+
 module.exports = router;

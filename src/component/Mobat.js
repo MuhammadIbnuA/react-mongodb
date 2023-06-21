@@ -114,15 +114,22 @@ const MyComponent = () => {
     setNewData({ namaObat: '' });
   };
 
+  const containerStyle = {
+    fontFamily: 'Arial',
+    padding: '50px',
+    backgroundColor: '#808080',
+    color: '#808080',
+  };
+
   return (
-    <div className="container" style={{ fontFamily: 'Arial', padding: '50px' }}>
+    <div className="container" style={containerStyle}>
       <h1 style={{ textAlign: 'center' }}>Obat List</h1>
       <Button variant="primary" onClick={() => setShowModal(true)}>
         Add Obat
       </Button>
       <h2>.</h2>
       {obats.length > 0 ? (
-        <Table striped bordered hover>
+        <Table striped bordered hover variant="dark"> {/* Add variant="dark" */}
           <thead>
             <tr>
               <th>Obat ID</th>
@@ -138,7 +145,7 @@ const MyComponent = () => {
                 <td>
                   <Button variant="info" onClick={() => handleEdit(obat)}>
                     Edit
-                  </Button>{' '}
+                  </Button>{" "}
                   <Button variant="danger" onClick={() => handleDelete(obat)}>
                     Delete
                   </Button>

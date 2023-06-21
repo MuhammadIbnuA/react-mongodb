@@ -1,62 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { Button } from 'react-bootstrap';
+import Navbar from 'react-bootstrap/Navbar';
+import { Button, Offcanvas, Toast } from 'react-bootstrap';
 import './component/navbar.css'; // Import the CSS file
 import HomeContent from './component/home';
-import PasienContent from './component/Tpasien';
-import DokterContent from './component/Tdokter';
-import PemeriksaanContent from './component/Tpemeriksaan';
-import ObatContent from './component/Tobat';
 import DokterMContent from './component/Mdokter';
 import PasienMContent from './component/Mpasien';
 import PemeriksaanMContent from './component/Mpemeriksaan';
 import ObatMContent from './component/Mobat';
 import LoginForm from './component/Mhome';
+import gambar from './brm2.jpg';
+import axios from 'axios';
 
-const Home = () => {
-  return (
-    <div>
-      <h1></h1>
-      <HomeContent />
-    </div>
-  );
-}
-
-const Pasien = () => {
-  return (
-    <div>
-      <h1></h1>
-      <PasienContent />
-    </div>
-  );
-}
-
-const Dokter = () => {
-  return (
-    <div>
-      <h1></h1>
-      <DokterContent />
-    </div>
-  );
-}
-
-const Pemeriksaan = () => {
-  return (
-    <div>
-      <h1></h1>
-      <PemeriksaanContent />
-    </div>
-  );
-}
-
-const Obat = () => {
-  return (
-    <div>
-      <h1></h1>
-      <ObatContent />
-    </div>
-  );
-}
 
 const DokterM = () => {
   return (
@@ -65,7 +20,7 @@ const DokterM = () => {
       <DokterMContent />
     </div>
   );
-}
+};
 
 const PasienM = () => {
   return (
@@ -74,7 +29,7 @@ const PasienM = () => {
       <PasienMContent />
     </div>
   );
-}
+};
 
 const PemeriksaanM = () => {
   return (
@@ -83,7 +38,7 @@ const PemeriksaanM = () => {
       <PemeriksaanMContent />
     </div>
   );
-}
+};
 
 const ObatM = () => {
   return (
@@ -92,7 +47,7 @@ const ObatM = () => {
       <ObatMContent />
     </div>
   );
-}
+};
 
 const LoginPage = ({ onColorChange }) => {
   return (
@@ -101,39 +56,106 @@ const LoginPage = ({ onColorChange }) => {
       <LoginForm onColorChange={onColorChange} />
     </div>
   );
-}
+};
 
 const handleLogout = () => {
   // Remove the token from local storage
   localStorage.removeItem('token');
-}
+};
 
 const NavBar = ({ color }) => {
+  const [showOffcanvas, setShowOffcanvas] = useState(false);
+  const [loggedInUsers, setLoggedInUsers] = useState([]);
+
+  useEffect(() => {
+    fetchLoggedInUsers();
+  }, []);
+
+  const fetchLoggedInUsers = async () => {
+    try {
+      const response = await axios.get('http://localhost:5001/api/loggedinusers');
+      setLoggedInUsers(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleClose = () => setShowOffcanvas(false);
+  const handleShow = () => setShowOffcanvas(true);
+
   return (
     <nav className="navbar" style={{ backgroundColor: color }}>
-      <ul>
-        <li>
-          <Link to="/login">Login Page</Link>
-        </li>
-        <li>
-          <Link to="/pasienmongo">Pasien</Link>
-        </li>
-        <li>
-          <Link to="/doktermongo">Dokter</Link>
-        </li>
-        <li>
-          <Link to="/pemeriksaanmongo">Pemeriksaan</Link>
-        </li>
-        <li>
-          <Link to="/obatmongo">Obat</Link>
-        </li>
-        <li>
-          <Button variant="warning" onClick={handleLogout}>Logout</Button>
-        </li>
-      </ul>
+      <Navbar.Brand href="/login">
+        <img
+          src={gambar}
+          width="30"
+          height="30"
+          className="d-inline-block align-top"
+          alt="Logo"
+        />{' '}
+        Mang Eak
+      </Navbar.Brand>
+      <Button variant="secondary" onClick={handleShow}>
+        Menu
+      </Button>
+      <Offcanvas show={showOffcanvas} onHide={handleClose}>
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title>Menu</Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body>
+          <ul>
+            <li>
+              <Link to="/login" onClick={handleClose}>
+                Login Page
+              </Link>
+            </li>
+            <li>
+              <Link to="/pasienmongo" onClick={handleClose}>
+                Pasien
+              </Link>
+            </li>
+            <li>
+              <Link to="/doktermongo" onClick={handleClose}>
+                Dokter
+              </Link>
+            </li>
+            <li>
+              <Link to="/pemeriksaanmongo" onClick={handleClose}>
+                Pemeriksaan
+              </Link>
+            </li>
+            <li>
+              <Link to="/obatmongo" onClick={handleClose}>
+                Obat
+              </Link>
+            </li>
+            <li>
+              <Button variant="warning" onClick={handleLogout}>
+                Logout
+              </Button>
+            </li>
+          </ul>
+        </Offcanvas.Body>
+      </Offcanvas>
+      <Toast
+        className="bg-dark"
+        style={{ position: 'fixed', top: '80px', right: '20px', maxWidth: '300px' }}
+        show={loggedInUsers.length > 0}
+      >
+        <Toast.Header>
+          <strong className="me-auto">Who are you?</strong>
+        </Toast.Header>
+        <Toast.Body className="text-light">
+          <ul>
+            {loggedInUsers.map((user) => (
+              <li key={user}>{user}</li>
+            ))}
+          </ul>
+        </Toast.Body>
+      </Toast>
     </nav>
   );
-}
+};
 
 const App = () => {
   const [navbarColor, setNavbarColor] = useState('#563d7c');
@@ -146,11 +168,6 @@ const App = () => {
     <Router>
       <NavBar color={navbarColor} />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/pasien" element={<Pasien />} />
-        <Route path="/dokter" element={<Dokter />} />
-        <Route path="/pemeriksaan" element={<Pemeriksaan />} />
-        <Route path="/obat" element={<Obat />} />
         <Route path="/doktermongo" element={<DokterM />} />
         <Route path="/pasienmongo" element={<PasienM />} />
         <Route path="/pemeriksaanmongo" element={<PemeriksaanM />} />
@@ -162,6 +179,6 @@ const App = () => {
       </Routes>
     </Router>
   );
-}
+};
 
 export default App;
